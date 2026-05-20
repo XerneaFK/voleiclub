@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-md p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Статистика игроков</h1>
+        <a href="{% url 'add_statistic' %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            + Добавить статистику
+        </a>
+    </div>
+
+    <!-- Сводка -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-blue-100 p-4 rounded">
+            <div class="text-2xl font-bold">{{ total_count }}</div>
+            <div class="text-gray-600">Всего записей</div>
+        </div>
+        <div class="bg-purple-100 p-4 rounded">
+            <div class="text-2xl font-bold">{{ aggregated_stats|length }}</div>
+            <div class="text-gray-600">Нормативов</div>
+        </div>
+    </div>
+
+    <!-- Сводка по нормативам -->
+    {% if aggregated_stats %}
+    <div class="mb-6">
+        <h2 class="text-xl font-bold mb-4">Сводка по нормативам</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full border">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="border px-4 py-2">Норматив</th>
+                        <th class="border px-4 py-2">Ед. изм.</th>
+                        <th class="border px-4 py-2">Всего</th>
+                        <th class="border px-4 py-2">Спортсменов</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in aggregated_stats %}
+                    <tr>
+                        <td class="border px-4 py-2">{{ stat.norm }}</td>
+                        <td class="border px-4 py-2">{{ stat.unit }}</td>
+                        <td class="border px-4 py-2">{{ stat.total_quantity }}</td>
+                        <td class="border px-4 py-2">{{ stat.sportsmen_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Детали -->
+    <div>
+        <h2 class="text-xl font-bold mb-4">Детальные записи</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full border">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="border px-4 py-2">Спортсмен</th>
+                        <th class="border px-4 py-2">Норматив</th>
+                        <th class="border px-4 py-2">Результат</th>
+                        <th class="border px-4 py-2">Дата</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in statistics %}
+                    <tr>
+                        <td class="border px-4 py-2">{{ stat.sportsman.full_name }}</td>
+                        <td class="border px-4 py-2">{{ stat.norm }}</td>
+                        <td class="border px-4 py-2">{{ stat.quantity }} {{ stat.unit }}</td>
+                        <td class="border px-4 py-2">{{ stat.date_recorded }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-4">Нет данных</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

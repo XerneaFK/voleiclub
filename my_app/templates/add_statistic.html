@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+    <h1 class="text-2xl font-bold mb-6">Добавить статистику</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Спортсмен *</label>
+            <select name="sportsman" required class="w-full border rounded px-3 py-2">
+                <option value="">-- Выберите спортсмена --</option>
+                {% for sportsman in sportsmen %}
+                    <option value="{{ sportsman.id }}">{{ sportsman.full_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Норматив *</label>
+            <input type="text" name="norm" required class="w-full border rounded px-3 py-2"
+                   placeholder="Например: Прыжок в высоту">
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-gray-700 font-bold mb-2">Результат *</label>
+                <input type="number" name="quantity" step="0.01" required class="w-full border rounded px-3 py-2">
+            </div>
+            <div>
+                <label class="block text-gray-700 font-bold mb-2">Единица измерения</label>
+                <input type="text" name="unit" class="w-full border rounded px-3 py-2" placeholder="раз, см, кг">
+            </div>
+        </div>
+        
+        <div class="flex space-x-4">
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                Сохранить
+            </button>
+            <a href="{% url 'statistics' %}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                Отмена
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+    <h1 class="text-2xl font-bold mb-6">Добавить спортсмена</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">ФИО *</label>
+            <input type="text" name="full_name" required
+                   class="w-full border rounded px-3 py-2">
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Дата рождения *</label>
+            <input type="date" name="birth_date" required
+                   class="w-full border rounded px-3 py-2">
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Разряд</label>
+            <select name="rank" class="w-full border rounded px-3 py-2">
+                <option value="3">3-й разряд</option>
+                <option value="2">2-й разряд</option>
+                <option value="1">1-й разряд</option>
+                <option value="kms">КМС</option>
+                <option value="ms">МС</option>
+                <option value="msmk">МСМК</option>
+            </select>
+        </div>
+        
+        <div class="flex space-x-4">
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                Сохранить
+            </button>
+            <a href="{% url 'sportsmen_list' %}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                Отмена
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

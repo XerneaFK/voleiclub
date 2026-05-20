@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+    <h1 class="text-2xl font-bold mb-6">
+        {% if sportsman %}
+            Добавить спортсмена "{{ sportsman.full_name }}" в команду
+        {% else %}
+            Добавить спортсмена в команду "{{ group.name }}"
+        {% endif %}
+    </h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">
+                {% if sportsman %}
+                    Выберите команду
+                {% else %}
+                    Выберите спортсмена
+                {% endif %}
+            </label>
+
+            {% if sportsman %}
+                <select name="group" required class="w-full border rounded px-3 py-2">
+                    <option value="">-- Выберите команду --</option>
+                    {% for group in groups %}
+                        <option value="{{ group.id }}">{{ group.name }}</option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <select name="sportsman" required class="w-full border rounded px-3 py-2">
+                    <option value="">-- Выберите спортсмена --</option>
+                    {% for s in available_sportsmen %}
+                        <option value="{{ s.id }}">
+                            {{ s.full_name }} ({{ s.get_rank_display }})
+                        </option>
+                    {% endfor %}
+                </select>
+                {% if not available_sportsmen %}
+                    <p class="text-red-500 text-sm mt-1">
+                        Нет спортсменов для добавления.
+                        <a href="{% url 'create_sportsman' %}">Создайте спортсмена</a>
+                    </p>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <div class="flex space-x-4">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Добавить
+            </button>
+            <a href="{% if sportsman %}{% url 'sportsmen_list' %}{% else %}{% url 'group_detail' group.id %}{% endif %}"
+               class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                Отмена
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

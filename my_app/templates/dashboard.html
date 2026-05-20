@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-6">Дашборд</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="text-3xl font-bold text-blue-600">{{ teams_count }}</div>
+        <div class="text-gray-600">Команд</div>
+    </div>
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="text-3xl font-bold text-green-600">{{ matches_count }}</div>
+        <div class="text-gray-600">Предстоящих матчей</div>
+    </div>
+</div>
+
+<!-- Последние тренировки -->
+{% if recent_matches %}
+<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+    <h2 class="text-xl font-bold mb-4">Последние тренировки</h2>
+    <div class="space-y-3">
+        {% for match in recent_matches %}
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                <div>
+                    <span class="font-semibold">{{ match.name }}</span>
+                    <span class="text-gray-500 text-sm ml-2">{{ match.date|date:"d.m.Y" }}</span>
+                </div>
+                <div class="text-sm text-gray-600">
+                    {{ match.group.name }} | {{ match.gym.name }}
+                </div>
+                <a href="{% url 'matches_list' %}" class="text-blue-500 hover:underline text-sm">
+                    Подробнее →
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Быстрые действия -->
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-xl font-bold mb-4">Быстрые действия</h2>
+    <div class="space-x-4">
+        <a href="{% url 'create_team' %}" class="inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+            + Создать команду
+        </a>
+        <a href="{% url 'create_match' %}" class="inline-block bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+            + Создать матч
+        </a>
+    </div>
+</div>
+{% endblock %}

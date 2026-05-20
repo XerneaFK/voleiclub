@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+    <h1 class="text-2xl font-bold mb-6">Создать новую команду</h1>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mb-4 p-3 rounded {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Название команды</label>
+            <input type="text" name="name" required class="w-full border rounded px-3 py-2">
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Зал</label>
+            <select name="gym" required class="w-full border rounded px-3 py-2">
+                <option value="">Выберите зал</option>
+                {% for gym in gyms %}
+                    <option value="{{ gym.id }}">{{ gym.name }}</option>
+                {% endfor %}
+            </select>
+            {% if not gyms %}
+                <p class="text-red-500 text-sm mt-1">Нет доступных залов. Сначала создайте зал через админку.</p>
+            {% endif %}
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Условия вступления</label>
+            <textarea name="entrance_condition" rows="3" class="w-full border rounded px-3 py-2"></textarea>
+        </div>
+
+        <div class="flex space-x-4">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Создать
+            </button>
+            <a href="{% url 'teams_list' %}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                Отмена
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

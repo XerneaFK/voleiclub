@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-md p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Матчи и тренировки</h1>
+        <a href="/matches/create/" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            + Создать матч
+        </a>
+    </div>
+    
+    <div class="space-y-4">
+        {% for match in my_matches %}
+        <div class="border p-4 rounded">
+            <h3 class="text-xl font-semibold">{{ match.name }}</h3>
+            <p>Команда: {{ match.group.name }}</p>
+            <p>Зал: {{ match.gym.name }}</p>
+            <p>Дата: {{ match.date }}</p>
+            <p>Время: {{ match.start_time }} - {{ match.end_time }}</p>
+        </div>
+        {% empty %}
+        <p class="text-gray-500">Нет запланированных матчей</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

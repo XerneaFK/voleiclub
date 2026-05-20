@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+    <h1 class="text-2xl font-bold mb-6">Отметить посещаемость</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Тренировка *</label>
+            <select name="schedule" required class="w-full border rounded px-3 py-2">
+                <option value="">-- Выберите --</option>
+                {% for schedule in schedules %}
+                    <option value="{{ schedule.id }}">
+                        {{ schedule.name }} - {{ schedule.date }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Спортсмен *</label>
+            <select name="sportsman" required class="w-full border rounded px-3 py-2">
+                <option value="">-- Выберите --</option>
+                {% for sportsman in sportsmen %}
+                    <option value="{{ sportsman.id }}">{{ sportsman.full_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="mb-4">
+            <label class="flex items-center">
+                <input type="checkbox" name="is_present" class="mr-2">
+                <span>Присутствовал</span>
+            </label>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Примечание</label>
+            <textarea name="note" rows="2" class="w-full border rounded px-3 py-2"></textarea>
+        </div>
+        
+        <div class="flex space-x-4">
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                Сохранить
+            </button>
+            <a href="{% url 'attendance' %}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                Отмена
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

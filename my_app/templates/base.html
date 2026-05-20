@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}VoleiClub{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .sidebar {
+            width: 260px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            transform: translateX(0);
+            z-index: 100;
+        }
+
+        .sidebar.closed {
+            transform: translateX(-260px);
+        }
+
+        .toggle-btn {
+            position: fixed;
+            left: 260px;
+            top: 20px;
+            background: #e74c3c;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            transition: left 0.3s ease;
+            z-index: 101;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .toggle-btn.closed {
+            left: 0;
+        }
+
+        .toggle-btn:hover {
+            background: #c0392b;
+        }
+
+        .content {
+            margin-left: 280px;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .content.closed {
+            margin-left: 60px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .username {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .logout-link {
+            color: #ef4444;
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .logout-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Панель -->
+    <div id="sidebar" class="sidebar">
+        <div class="p-4 border-b">
+            <h1 class="text-xl font-bold text-red-600">VoleiClub</h1>
+        </div>
+        <nav class="p-4">
+            <a href="{% url 'dashboard' %}" class="block px-4 py-2 hover:bg-gray-100 rounded">📊 Дашборд</a>
+            <a href="{% url 'teams_list' %}" class="block px-4 py-2 hover:bg-gray-100 rounded">👥 Команды</a>
+            <a href="{% url 'sportsmen_list' %}" class="block px-4 py-2 hover:bg-gray-100 rounded">🏃 Спортсмены</a>
+            <a href="{% url 'matches_list' %}" class="block px-4 py-2 hover:bg-gray-100 rounded">⚽ Матчи</a>
+            <a href="{% url 'statistics' %}" class="block px-4 py-2 hover:bg-gray-100 rounded">📈 Статистика</a>
+            <a href="{% url 'attendance' %}" class="block px-4 py-2 hover:bg-gray-100 rounded">✅ Посещаемость</a>
+        </nav>
+
+        <div class="absolute bottom-0 w-full p-4 border-t bg-white">
+            <div class="user-info">
+                <div class="avatar">
+                    {{ user.username|first|upper }}
+                </div>
+                <div class="user-details">
+                    <div class="username">{{ user.username }}</div>
+                    <a href="{% url 'logout' %}" class="logout-link">Выйти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кнопка -->
+    <div id="toggleBtn" class="toggle-btn">☰</div>
+
+    <!-- Контент -->
+    <div id="content" class="content p-6">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 p-3 rounded bg-green-100 text-green-700">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const content = document.getElementById('content');
+        let closed = false;
+
+        toggleBtn.onclick = function() {
+            closed = !closed;
+            if (closed) {
+                sidebar.classList.add('closed');
+                toggleBtn.classList.add('closed');
+                content.classList.add('closed');
+            } else {
+                sidebar.classList.remove('closed');
+                toggleBtn.classList.remove('closed');
+                content.classList.remove('closed');
+            }
+        }
+    </script>
+</body>
+</html>

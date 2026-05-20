@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Команды ({{ teams|length }})</h1>
+    <a href="{% url 'create_team' %}" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+        + Добавить новую команду
+    </a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+   {% for team in teams %}
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-bold mb-2">{{ team.name }}</h3>
+        <p class="text-gray-600 mb-2">🏢 {{ team.gym.name }}</p>
+        <p class="text-gray-600 mb-2">👥 {{ team.sportsmen.count }} спортсменов</p>
+        <a href="{% url 'group_detail' team.id %}" class="text-blue-500 hover:underline mt-2 inline-block">
+            Управление составом →
+        </a>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+    <h1 class="text-2xl font-bold mb-6">Создать матч/тренировку</h1>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mb-4 p-3 rounded {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Название</label>
+            <input type="text" name="name" required
+                   class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                   placeholder="Например: Тренировка основной команды">
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Команда</label>
+            <select name="group" required class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                <option value="">Выберите команду</option>
+                {% for group in groups %}
+                    <option value="{{ group.id }}">{{ group.name }}</option>
+                {% empty %}
+                    <option value="">Нет доступных команд</option>
+                {% endfor %}
+            </select>
+            {% if not groups %}
+                <p class="text-red-500 text-sm mt-1">Сначала создайте команду!</p>
+            {% endif %}
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Зал</label>
+            <select name="gym" required class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                <option value="">Выберите зал</option>
+                {% for gym in gyms %}
+                    <option value="{{ gym.id }}">{{ gym.name }}</option>
+                {% empty %}
+                    <option value="">Нет доступных залов</option>
+                {% endfor %}
+            </select>
+            {% if not gyms %}
+                <p class="text-red-500 text-sm mt-1">Сначала создайте зал в админке!</p>
+            {% endif %}
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">Дата</label>
+            <input type="date" name="date" required
+                   class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-gray-700 font-bold mb-2">Время начала</label>
+                <input type="time" name="start_time" required
+                       class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-gray-700 font-bold mb-2">Время окончания</label>
+                <input type="time" name="end_time" required
+                       class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+            </div>
+        </div>
+
+        <div class="flex space-x-4">
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                Создать
+            </button>
+            <a href="{% url 'matches_list' %}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                Отмена
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

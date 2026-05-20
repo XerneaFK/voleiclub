@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-md p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Посещаемость</h1>
+        <a href="{% url 'add_attendance' %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            + Отметить посещаемость
+        </a>
+    </div>
+
+    <!-- ФИЛЬТРЫ (выпадающие списки) -->
+    <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+        <h2 class="text-lg font-bold mb-3">Фильтры</h2>
+        <form method="get" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-gray-700 font-bold mb-2">Тренировка</label>
+                <select name="schedule" class="w-full border rounded px-3 py-2" onchange="this.form.submit()">
+                    <option value="">-- Все тренировки --</option>
+                    {% for schedule in schedules %}
+                        <option value="{{ schedule.id }}" {% if selected_schedule_id == schedule.id %}selected{% endif %}>
+                            {{ schedule.name }} ({{ schedule.date|date:"d.m.Y" }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-gray-700 font-bold mb-2">Спортсмен</label>
+                <select name="sportsman" class="w-full border rounded px-3 py-2" onchange="this.form.submit()">
+                    <option value="">-- Все спортсмены --</option>
+                    {% for sportsman in sportsmen %}
+                        <option value="{{ sportsman.id }}" {% if selected_sportsman_id == sportsman.id %}selected{% endif %}>
+                            {{ sportsman.full_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+
+        <!-- Кнопка сброса фильтров -->
+        {% if selected_schedule_id or selected_sportsman_id %}
+            <div class="mt-3">
+                <a href="{% url 'attendance' %}" class="text-blue-500 hover:underline text-sm">
+                    ✖ Сбросить фильтры
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Статистика посещаемости -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-blue-100 p-4 rounded text-center">
+            <div class="text-2xl font-bold">{{ total_attendances }}</div>
+            <div class="text-gray-600">Всего отметок</div>
+        </div>
+        <div class="bg-green-100 p-4 rounded text-center">
+            <div class="text-2xl font-bold text-green-600">{{ present_count }}</div>
+            <div class="text-gray-600">Присутствовали</div>
+        </div>
+        <div class="bg-red-100 p-4 rounded text-center">
+            <div class="text-2xl font-bold text-red-600">{{ absent_count }}</div>
+            <div class="text-gray-600">Отсутствовали</div>
+        </div>
+        <div class="bg-purple-100 p-4 rounded text-center">
+            <div class="text-2xl font-bold">{{ attendance_rate }}%</div>
+            <div class="text-gray-600">Посещаемость</div>
+        </div>
+    </div>
+
+    <!-- Статистика по спортсменам (если выбран фильтр по тренировке) -->
+    {% if selected_schedule_id and sportsmen_stats %}
+    <div class="mb-6">
+        <h2 class="text-xl font-bold mb-4">Статистика по спортсменам на этой тренировке</h2>
+        <!-- Таблица статистики... -->
+    </div>
+    {% endif %}
+
+    <!-- СТАТИСТИКА ПО СПОРТСМЕНУ (если выбран конкретный спортсмен) -->
+    {% if selected_sportsman_id and not selected_schedule_id %}
+    <div class="mb-6">
+        <h2 class="text-xl font-bold mb-4">Общая статистика спортсмена</h2>
+        <!-- Статистика спортсмена... -->
+    </div>
+    {% endif %}
+
+    <!-- ========== БЫСТРЫЕ ФИЛЬТРЫ - ВСТАВЬТЕ ЭТО ЗДЕСЬ ========== -->
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold">Детальные записи</h2>
+        <div class="space-x-2">
+            <a href="{% url 'attendance' %}" class="text-gray-500 hover:text-gray-700 text-sm">
+                Все
+            </a>
+            {% for schedule in schedules|slice:":3" %}
+                <a href="?schedule={{ schedule.id }}" class="text-blue-500 hover:text-blue-700 text-sm">
+                    {{ schedule.name|truncatechars:15 }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- ========================================================= -->
+
+    <!-- Детальная таблица посещаемости -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full border">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="border px-4 py-2">
+                        <a href="?{% if selected_schedule_id %}schedule={{ selected_schedule_id }}&{% endif %}{% if selected_sportsman_id %}sportsman={{ selected_sportsman_id }}&{% endif %}order_by=sportsman">
+                            Спортсмен ↓
+                        </a>
+                    </th>
+                    <th class="border px-4 py-2">
+                        <a href="?{% if selected_schedule_id %}schedule={{ selected_schedule_id }}&{% endif %}{% if selected_sportsman_id %}sportsman={{ selected_sportsman_id }}&{% endif %}order_by=schedule">
+                            Тренировка ↓
+                        </a>
+                    </th>
+                    <th class="border px-4 py-2">
+                        <a href="?{% if selected_schedule_id %}schedule={{ selected_schedule_id }}&{% endif %}{% if selected_sportsman_id %}sportsman={{ selected_sportsman_id }}&{% endif %}order_by=date">
+                            Дата ↓
+                        </a>
+                    </th>
+                    <th class="border px-4 py-2">Статус</th>
+                    <th class="border px-4 py-2">Примечание</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for att in attendances %}
+                <tr>
+                    <td class="border px-4 py-2">
+                        <a href="?sportsman={{ att.sportsman.id }}" class="text-blue-600 hover:underline">
+                            {{ att.sportsman.full_name }}
+                        </a>
+                    </td>
+                    <td class="border px-4 py-2">
+                        <a href="?schedule={{ att.schedule.id }}" class="text-blue-600 hover:underline">
+                            {{ att.schedule.name }}
+                        </a>
+                    </td>
+                    <td class="border px-4 py-2">{{ att.schedule.date|date:"d.m.Y" }}</td>
+                    <td class="border px-4 py-2">
+                        {% if att.is_present %}
+                            <span class="text-green-600">✓ Присутствовал</span>
+                        {% else %}
+                            <span class="text-red-600">✗ Отсутствовал</span>
+                        {% endif %}
+                    </td>
+                    <td class="border px-4 py-2">{{ att.note|default:"-" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-gray-500">
+                        Нет данных о посещаемости
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

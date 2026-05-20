@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+venv/
+.venv/
+env/
+ENV/
+*.log
+
+# Django
+db.sqlite3
+*.sqlite3
+/media/
+/staticfiles/
+migrations/
+!migrations/__init__.py
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Secret keys
+*.env
+settings_local.py
+secret_key.txt
+
+# Virtual environment
+.venv/
+venv/
