@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'my_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'voleibol',
-        'USER': 'postgres',
-        'PASSWORD': '',  # ⚠️ Нужно добавить пароль от PostgreSQL
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': 's55421_lordlentay',
+        'USER': 'u55421_oSH6gcm0Tk',
+        'PASSWORD': 'jFmL@2C+tK5Rr!9u2y+hhd8W',  # ⚠️ Нужно добавить пароль от PostgreSQL
+        'HOST': 'd2.rustix.me',
+        'PORT': '3306',
     }
 }
 
